@@ -13,18 +13,18 @@ class ProjectsController < ApplicationController
     json_response(@project, :created)
   end
 
-  # GET /todos/:id
+  # GET /todos/:name
   def show
     json_response(@project)
   end
 
-  # PUT /todos/:id
+  # PUT /todos/:name
   def update
     @project.update(project_params)
     head :no_content
   end
 
-  # DELETE /todos/:id
+  # DELETE /todos/:name
   def destroy
     @project.destroy
     head :no_content
@@ -39,7 +39,7 @@ class ProjectsController < ApplicationController
   end
 
   def set_project
-    @project = Project.find(params[:id])
+    @project = Project.find_by!(name: params[:name])
   end
 
 end

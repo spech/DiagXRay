@@ -1,12 +1,12 @@
-# spec/requests/todos_spec.rb
+# spec/requests/projects_spec.rb
 require 'rails_helper'
 
 RSpec.describe 'Projects API', type: :request do
   # initialize test data
   let!(:projects) { create_list(:project, 10) }
-  let(:project_id) { projects.first.id }
+  let(:project_name) { projects.first.name }
 
-  # Test suite for GET /todos
+  # Test suite for GET /projects
   describe 'GET /projects' do
     # make HTTP get request before each example
     before { get '/projects' }
@@ -22,14 +22,14 @@ RSpec.describe 'Projects API', type: :request do
     end
   end
 
-  # Test suite for GET /todos/:id
-  describe 'GET /projects/:id' do
-    before { get "/projects/#{project_id}" }
+  # Test suite for GET /projects/:name
+  describe 'GET /projects/:name' do
+    before { get "/projects/#{URI.encode(project_name)}" }
 
     context 'when the record exists' do
       it 'returns the project' do
         expect(json).not_to be_empty
-        expect(json['id']).to eq(project_id)
+        expect(json['name']).to eq(project_name)
       end
 
       it 'returns status code 200' do
@@ -38,7 +38,7 @@ RSpec.describe 'Projects API', type: :request do
     end
 
     context 'when the record does not exist' do
-      let(:project_id) { 100 }
+      let(:project_name) { Faker::Lorem.word }
 
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
@@ -50,16 +50,16 @@ RSpec.describe 'Projects API', type: :request do
     end
   end
 
-  # Test suite for POST /todos
+  # Test suite for POST /projects
   describe 'POST /projects' do
     # valid payload
-    let(:valid_attributes) { { name: 'Learn Elm', created_by: '1' } }
+    let(:valid_attributes) { { name: 'LearnElm', created_by: '1' } }
 
     context 'when the request is valid' do
       before { post '/projects', params: valid_attributes }
 
       it 'creates a project' do
-        expect(json['name']).to eq('Learn Elm')
+        expect(json['name']).to eq('LearnElm')
       end
 
       it 'returns status code 201' do
@@ -81,12 +81,12 @@ RSpec.describe 'Projects API', type: :request do
     end
   end
 
-  # Test suite for PUT /todos/:id
-  describe 'PUT /projects/:id' do
-    let(:valid_attributes) { { title: 'Shopping' } }
+  # Test suite for PUT /projects/:name
+  describe 'PUT /projects/:name' do
+    let(:valid_attributes) { { name: 'Shopping' } }
 
     context 'when the record exists' do
-      before { put "/projects/#{project_id}", params: valid_attributes }
+      before { put "/projects/#{URI.encode(project_name)}", params: valid_attributes }
 
       it 'updates the record' do
         expect(response.body).to be_empty
@@ -98,9 +98,9 @@ RSpec.describe 'Projects API', type: :request do
     end
   end
 
-  # Test suite for DELETE /todos/:id
-  describe 'DELETE /projects/:id' do
-    before { delete "/projects/#{project_id}" }
+  # Test suite for DELETE /projects/:name
+  describe 'DELETE /projects/:name' do
+    before { delete "/projects/#{URI.encode(project_name)}" }
 
     it 'returns status code 204' do
       expect(response).to have_http_status(204)
