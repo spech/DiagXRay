@@ -5,11 +5,14 @@ RSpec.describe 'Projects API', type: :request do
   # initialize test data
   let!(:projects) { create_list(:project, 10) }
   let(:project_name) { projects.first.name }
+  headers = {
+    "ACCEPT" => "application/json",     # This is what Rails 4 accepts
+  }
 
   # Test suite for GET /projects
   describe 'GET /projects' do
     # make HTTP get request before each example
-    before { get '/projects' }
+    before { get '/projects', :headers => headers }
 
     it 'returns projects' do
       # Note `json` is a custom helper to parse JSON responses
@@ -24,7 +27,7 @@ RSpec.describe 'Projects API', type: :request do
 
   # Test suite for GET /projects/:name
   describe 'GET /projects/:name' do
-    before { get "/projects/#{URI.encode(project_name)}" }
+    before { get "/projects/#{URI.encode(project_name)}", :headers => headers }
 
     context 'when the record exists' do
       it 'returns the project' do
@@ -56,7 +59,7 @@ RSpec.describe 'Projects API', type: :request do
     let(:valid_attributes) { { name: 'LearnElm', created_by: '1' } }
 
     context 'when the request is valid' do
-      before { post '/projects', params: valid_attributes }
+      before { post '/projects', params: valid_attributes, :headers => headers }
 
       it 'creates a project' do
         expect(json['name']).to eq('LearnElm')
@@ -68,7 +71,7 @@ RSpec.describe 'Projects API', type: :request do
     end
 
     context 'when the request is invalid' do
-      before { post '/projects', params: { name: 'Foobar' } }
+      before { post '/projects', params: { name: 'Foobar' }, :headers => headers }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
@@ -86,7 +89,7 @@ RSpec.describe 'Projects API', type: :request do
     let(:valid_attributes) { { name: 'Shopping' } }
 
     context 'when the record exists' do
-      before { put "/projects/#{URI.encode(project_name)}", params: valid_attributes }
+      before { put "/projects/#{URI.encode(project_name)}", params: valid_attributes, :headers => headers }
 
       it 'updates the record' do
         expect(response.body).to be_empty
@@ -100,7 +103,7 @@ RSpec.describe 'Projects API', type: :request do
 
   # Test suite for DELETE /projects/:name
   describe 'DELETE /projects/:name' do
-    before { delete "/projects/#{URI.encode(project_name)}" }
+    before { delete "/projects/#{URI.encode(project_name)}", :headers => headers }
 
     it 'returns status code 204' do
       expect(response).to have_http_status(204)

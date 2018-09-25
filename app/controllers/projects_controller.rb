@@ -1,21 +1,31 @@
 class ProjectsController < ApplicationController
+  layout 'application'
   before_action :set_project, only: [:show, :update, :destroy]
 
   # GET /todos
   def index
     @projects = Project.all
-    json_response(@projects)
+    respond_to do |format|
+      format.html
+      format.json { render json: @projects }
+    end
   end
 
   # POST /projects
   def create
     @project = Project.create!(project_params)
-    json_response(@project, :created)
+    respond_to do |format|
+      format.html
+      format.json { render json: @project, status: :created }
+    end
   end
 
   # GET /todos/:name
   def show
-    json_response(@project)
+    respond_to do |format|
+      format.html
+      format.json { render json: @project }
+    end
   end
 
   # PUT /todos/:name
