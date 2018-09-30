@@ -56,13 +56,13 @@ RSpec.describe 'Projects API', type: :request do
   # Test suite for POST /projects
   describe 'POST /projects' do
     # valid payload
-    let(:valid_attributes) { { name: 'LearnElm', created_by: '1' } }
+    let(:valid_attributes) { { name: '99.88.77', created_by: '1' }}
 
     context 'when the request is valid' do
-      before { post '/projects', params: valid_attributes, :headers => headers }
+      before { post '/projects', params: valid_attributes, headers: headers }
 
       it 'creates a project' do
-        expect(json['name']).to eq('LearnElm')
+        expect(json['name']).to eq('99.88.77')
       end
 
       it 'returns status code 201' do
@@ -71,7 +71,7 @@ RSpec.describe 'Projects API', type: :request do
     end
 
     context 'when the request is invalid' do
-      before { post '/projects', params: { name: 'Foobar' }, :headers => headers }
+      before { post '/projects', params: { name: '11.22.33' }, headers: headers }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
@@ -86,7 +86,7 @@ RSpec.describe 'Projects API', type: :request do
 
   # Test suite for PUT /projects/:name
   describe 'PUT /projects/:name' do
-    let(:valid_attributes) { { name: 'Shopping' } }
+    let(:valid_attributes) { { name: '1.2.3'} }
 
     context 'when the record exists' do
       before { put "/projects/#{URI.encode(project_name)}", params: valid_attributes, :headers => headers }
